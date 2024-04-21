@@ -48,6 +48,12 @@ fun FoodJoke(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+            Text(
+                text = "Git check",
+                style = MaterialTheme.typography.h6,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
     }
