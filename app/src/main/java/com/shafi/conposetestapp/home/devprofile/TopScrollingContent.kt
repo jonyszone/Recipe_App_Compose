@@ -1,4 +1,4 @@
-package com.guru.composecookbook.profile
+package com.shafi.conposetestapp.home.devprofile
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -19,7 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.guru.composecookbook.theme.materialTypography
+import com.shafi.conposetestapp.R
+import com.shafi.conposetestapp.home.initialImageFloat
+import com.shafi.conposetestapp.home.name
+import com.shafi.conposetestapp.ui.theme.materialTypography
 
 @Composable
 fun TopScrollingContent(scrollState: ScrollState) {

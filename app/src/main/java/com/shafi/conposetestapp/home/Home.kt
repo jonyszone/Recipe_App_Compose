@@ -80,7 +80,7 @@ enum class HomeSections(
 ) {
     FEED(R.string.home_feed, Icons.Outlined.Home, "home/feed"),
     FAVORITE(R.string.favorite, Icons.Outlined.FavoriteBorder, "home/favorite"),
-    FOODJOKE(R.string.food_joke, Icons.Outlined.Face, "home/food_joke"),
+    FOODJOKE(R.string.dev_profile, Icons.Outlined.Face, "home/food_joke"),
 
 }
 

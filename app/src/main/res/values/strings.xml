@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">Conpose Test App</string>
+    <string name="app_name">Recipe App Compose</string>
     <string name="home_feed">Home</string>
     <string name="favorite">Favorite</string>
-    <string name="food_joke">Food Joke</string>
-    <string name="work_in_progress">Work in progress</string>
+    <string name="dev_profile">Dev Profile</string>
+    <string name="about_project">Work in progress</string>
+    <string name="about_me">I\'m an enthusiastic developer passionate about crafting solutions that enhance our world. My focus lies in leveraging technology to elevate fundamental aspects of life such as health, education, and the environment</string>
 </resources>

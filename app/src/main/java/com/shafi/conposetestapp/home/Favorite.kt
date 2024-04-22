@@ -43,7 +43,7 @@ fun Favorite(
                 .padding(it)
         ) {
             Text(
-                text = stringResource(R.string.work_in_progress),
+                text = "Work in progress",
                 style = MaterialTheme.typography.subtitle2,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
