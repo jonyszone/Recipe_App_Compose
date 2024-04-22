@@ -79,6 +79,6 @@ dependencies {
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
-
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
 }

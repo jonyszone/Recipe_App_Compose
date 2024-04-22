@@ -67,7 +67,7 @@ fun NavGraphBuilder.addHomeGraph(
         Favorite(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
     composable(HomeSections.FOODJOKE.route) { from ->
-        FoodJoke(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
+        DevProfile(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
 
 
