@@ -63,11 +63,11 @@ fun DevProfile(
         bottomBar = {
             RecipeBottomBar(
                 tabs = HomeSections.values(),
-                currentRoute = HomeSections.FOODJOKE.route,
+                currentRoute = HomeSections.DEVPROFILE.route,
                 navigateToRoute = onNavigateToRoute
             )
         },
-        modifier = modifier
+       // modifier = modifier
     ) {
         Box(
             modifier = Modifier
@@ -135,15 +135,6 @@ private fun TopBackground() {
             .fillMaxWidth()
             .horizontalGradientBackground(gradient)
     )
-}
-
-@Composable
-private fun Favorite(
-    onSnackClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
-) {
-
-
 }
 
 

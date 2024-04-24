@@ -66,7 +66,7 @@ fun NavGraphBuilder.addHomeGraph(
     composable(HomeSections.FAVORITE.route) { from ->
         Favorite(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
-    composable(HomeSections.FOODJOKE.route) { from ->
+    composable(HomeSections.DEVPROFILE.route) { from ->
         DevProfile(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
 
@@ -80,7 +80,7 @@ enum class HomeSections(
 ) {
     FEED(R.string.home_feed, Icons.Outlined.Home, "home/feed"),
     FAVORITE(R.string.favorite, Icons.Outlined.FavoriteBorder, "home/favorite"),
-    FOODJOKE(R.string.dev_profile, Icons.Outlined.Face, "home/food_joke"),
+    DEVPROFILE(R.string.dev_profile, Icons.Outlined.Face, "home/dev_profile"),
 
 }
 
