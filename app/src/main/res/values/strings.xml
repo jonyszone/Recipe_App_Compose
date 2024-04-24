@@ -3,6 +3,6 @@
     <string name="home_feed">Home</string>
     <string name="favorite">Favorite</string>
     <string name="dev_profile">Dev Profile</string>
-    <string name="about_project">Work in progress</string>
+    <string name="about_project">This project was initiated due to my fascination with declarative UIs. I\'ve been closely monitoring Jetpack Compose even before its alpha release, aiming to grasp how it could seamlessly integrate into our current ecosystem. Thus, this endeavor aims to demonstrate its potential in making Android development more enjoyable, straightforward, and engaging.</string>
     <string name="about_me">I\'m an enthusiastic developer passionate about crafting solutions that enhance our world. My focus lies in leveraging technology to elevate fundamental aspects of life such as health, education, and the environment</string>
 </resources>
