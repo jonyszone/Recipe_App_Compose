@@ -32,7 +32,7 @@ fun TopScrollingContent(scrollState: ScrollState) {
         Column(
             modifier = Modifier
                 .padding(start = 8.dp, top = 48.dp)
-                .alpha(animateFloatAsState(if (visibilityChangeFloat) 0f else 1f).value)
+                .alpha(animateFloatAsState(if (visibilityChangeFloat) 0f else 1f, label = "").value)
         ) {
             Text(
                 text = name,
@@ -56,7 +56,7 @@ fun AnimatedImage(scroll: Float) {
         contentDescription = null,
         modifier = Modifier
             .padding(start = 16.dp)
-            .size(animateDpAsState(Dp(dynamicAnimationSizeValue)).value)
+            .size(animateDpAsState(Dp(dynamicAnimationSizeValue), label = "").value)
             .clip(CircleShape)
     )
 }

@@ -12,28 +12,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.shafi.conposetestapp.R
 import com.shafi.conposetestapp.home.devprofile.BottomScrollingContent
 import com.shafi.conposetestapp.home.devprofile.TopScrollingContent
@@ -105,25 +99,18 @@ fun TopAppBarView(scroll: Float) {
     if (scroll > initialImageFloat + 5) {
         TopAppBar(
             title = {
-                androidx.compose.material3.Text(text = name)
+                Text(text = name)
             },
             navigationIcon = {
                 Image(
-                    painter = painterResource(id = R.drawable.crab),
+                    painter = painterResource(id = R.drawable.p1),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(vertical = 4.dp, horizontal = 8.dp)
                         .size(32.dp)
                         .clip(CircleShape)
                 )
-                /*                Image(
-                                    painter = rememberAsyncImagePainter("https://avatars.githubusercontent.com/u/26630930?v=4"),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(vertical = 4.dp, horizontal = 8.dp)
-                                        .size(32.dp)
-                                        .clip(CircleShape)
-                                )*/
+
             },
             actions = {
                 Icon(
@@ -139,8 +126,8 @@ fun TopAppBarView(scroll: Float) {
 @Composable
 private fun TopBackground() {
     val gradient = listOf(
-        androidx.compose.material3.MaterialTheme.colorScheme.primary,
-        androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
     )
     Spacer(
         modifier = Modifier
