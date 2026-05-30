@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -16,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -25,9 +25,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.shafi.conposetestapp.model.FoodRecipe
+import com.shafi.conposetestapp.ui.theme.RecipeDetailSkeleton
 import com.shafi.conposetestapp.viewmodel.RecipeViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeDetailScreen(
     recipeId: Int,
@@ -46,76 +46,100 @@ fun RecipeDetailScreen(
         loading = false
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(recipe?.name ?: "Recipe", maxLines = 1) },
-                navigationIcon = {
-                    IconButton(onClick = upPress) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    if (recipe != null) {
-                        IconButton(onClick = { vm.toggleFavorite(recipeId) }) {
-                            Icon(
-                                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = "Favorite",
-                                tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-                }
-            )
-        }
-    ) { padding ->
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         when {
-            loading -> Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-            recipe == null -> Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            loading -> RecipeDetailSkeleton()
+            recipe == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Recipe not found")
             }
-            else -> DetailContent(recipe = recipe!!, padding = padding)
+            else -> DetailContent(recipe = recipe!!)
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            CircleIconButton(onClick = upPress) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
+            }
+            if (recipe != null) {
+                CircleIconButton(onClick = { vm.toggleFavorite(recipeId) }) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun DetailContent(recipe: FoodRecipe, padding: PaddingValues) {
+private fun CircleIconButton(onClick: () -> Unit, content: @Composable () -> Unit) {
+    Surface(shape = CircleShape, color = Color.White.copy(alpha = 0.9f), modifier = Modifier.size(44.dp)) {
+        IconButton(onClick = onClick) { content() }
+    }
+}
+
+@Composable
+private fun DetailContent(recipe: FoodRecipe) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(padding),
-        contentPadding = PaddingValues(bottom = 24.dp)
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 32.dp)
     ) {
         item {
-            AsyncImage(
-                model = recipe.imageUrl,
-                contentDescription = recipe.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth().height(240.dp)
-            )
+            Box(modifier = Modifier.fillMaxWidth().height(320.dp)) {
+                AsyncImage(
+                    model = recipe.imageUrl,
+                    contentDescription = recipe.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+                Box(
+                    modifier = Modifier.fillMaxSize().background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)),
+                            startY = 320f
+                        )
+                    )
+                )
+                Text(
+                    text = recipe.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.BottomStart).padding(20.dp)
+                )
+            }
         }
         item {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(recipe.name, fontWeight = FontWeight.Bold, fontSize = 22.sp)
-                Spacer(Modifier.height(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (recipe.category.isNotBlank()) InfoChip(recipe.category)
-                }
-                Spacer(Modifier.height(12.dp))
-                Text(recipe.about, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Row(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                if (recipe.category.isNotBlank()) InfoChip("🍽 ${recipe.category}")
+                if (recipe.ingredients.isNotEmpty()) InfoChip("🥕 ${recipe.ingredients.size} items")
+                if (recipe.steps.isNotEmpty()) InfoChip("📝 ${recipe.steps.size} steps")
             }
         }
         if (recipe.ingredients.isNotEmpty()) {
             item { SectionHeader("Ingredients") }
-            itemsIndexed(recipe.ingredients) { _, ingredient ->
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(Modifier.size(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary))
-                    Spacer(Modifier.width(10.dp))
-                    Text(ingredient, style = MaterialTheme.typography.bodyMedium)
+            item {
+                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
+                    recipe.ingredients.forEach { ingredient ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(Modifier.size(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary))
+                            Spacer(Modifier.width(12.dp))
+                            Text(ingredient, style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
                 }
             }
         }
@@ -123,17 +147,17 @@ private fun DetailContent(recipe: FoodRecipe, padding: PaddingValues) {
             item { SectionHeader("Instructions") }
             itemsIndexed(recipe.steps) { index, step ->
                 Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.Top
                 ) {
                     Box(
-                        modifier = Modifier.size(24.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary),
+                        modifier = Modifier.size(28.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("${index + 1}", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text("${index + 1}", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                     }
-                    Spacer(Modifier.width(10.dp))
-                    Text(step, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 2.dp))
+                    Spacer(Modifier.width(12.dp))
+                    Text(step, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 2.dp))
                 }
             }
         }
@@ -142,13 +166,22 @@ private fun DetailContent(recipe: FoodRecipe, padding: PaddingValues) {
 
 @Composable
 private fun SectionHeader(title: String) {
-    Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp))
-    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+    Text(
+        text = title,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 8.dp)
+    )
 }
 
 @Composable
 private fun InfoChip(text: String) {
-    Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.primaryContainer, tonalElevation = 2.dp) {
-        Text(text, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+    Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.secondaryContainer) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     }
 }
