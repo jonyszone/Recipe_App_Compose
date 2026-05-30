@@ -3,9 +3,9 @@ package com.shafi.conposetestapp.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-import androidx.compose.material.Colors
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -67,6 +67,46 @@ private val DarkColorPalette = RecipeColors(
     isDark = true
 )
 
+private val LightColors = lightColorScheme(
+    primary = Color(0xFFE8590C),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFFFDBC9),
+    onPrimaryContainer = Color(0xFF351000),
+    secondary = Color(0xFF77574A),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFFFDBC9),
+    onSecondaryContainer = Color(0xFF2C160C),
+    tertiary = Color(0xFF6C5D2F),
+    background = Color(0xFFFFFBFF),
+    onBackground = Color(0xFF201A18),
+    surface = Color(0xFFFFFBFF),
+    onSurface = Color(0xFF201A18),
+    surfaceVariant = Color(0xFFF5DED5),
+    onSurfaceVariant = Color(0xFF53433D),
+    outline = Color(0xFF85736C),
+    error = FunctionalRed
+)
+
+private val DarkColors = darkColorScheme(
+    primary = Color(0xFFFFB596),
+    onPrimary = Color(0xFF552000),
+    primaryContainer = Color(0xFF783100),
+    onPrimaryContainer = Color(0xFFFFDBC9),
+    secondary = Color(0xFFE7BEAC),
+    onSecondary = Color(0xFF442A1F),
+    secondaryContainer = Color(0xFF5D4034),
+    onSecondaryContainer = Color(0xFFFFDBC9),
+    tertiary = Color(0xFFD8C58F),
+    background = Color(0xFF201A18),
+    onBackground = Color(0xFFEDE0DB),
+    surface = Color(0xFF271D1A),
+    onSurface = Color(0xFFEDE0DB),
+    surfaceVariant = Color(0xFF53433D),
+    onSurfaceVariant = Color(0xFFD8C2B9),
+    outline = Color(0xFFA08D85),
+    error = FunctionalRedDark
+)
+
 @Composable
 fun ConposeTestAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -76,7 +116,7 @@ fun ConposeTestAppTheme(
 
     ProvideJetsnackColors(colors) {
         MaterialTheme(
-           colorScheme = darkColorScheme(),
+            colorScheme = if (darkTheme) DarkColors else LightColors,
             typography = Typography,
             content = content
         )
@@ -258,26 +298,3 @@ fun ProvideJetsnackColors(
 private val LocalJetsnackColors = staticCompositionLocalOf<RecipeColors> {
     error("No JetsnackColorPalette provided")
 }
-
-/**
- * A Material [Colors] implementation which sets all colors to [debugColor] to discourage usage of
- * [MaterialTheme.colors] in preference to [ConposeTestAppTheme.colors].
- */
-fun debugColors(
-    darkTheme: Boolean,
-    debugColor: Color = Color.Magenta
-) = Colors(
-    primary = debugColor,
-    primaryVariant = debugColor,
-    secondary = debugColor,
-    secondaryVariant = debugColor,
-    background = debugColor,
-    surface = debugColor,
-    error = debugColor,
-    onPrimary = debugColor,
-    onSecondary = debugColor,
-    onBackground = debugColor,
-    onSurface = debugColor,
-    onError = debugColor,
-    isLight = !darkTheme
-)
