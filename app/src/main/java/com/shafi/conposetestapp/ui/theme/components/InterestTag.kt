@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.shafi.conposetestapp.ui.theme.typography
 
 @Stable
 interface TagColors {
@@ -54,8 +53,8 @@ fun InterestTag(
     text: String,
     modifier: Modifier = Modifier,
     colors: TagColors = TagDefaults.tagColors(),
-    shape: Shape = RoundedCornerShape(4.dp),
-    style: TextStyle = typography.body2.copy(fontWeight = FontWeight.Bold),
+    shape: Shape = RoundedCornerShape(50),
+    style: TextStyle = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
     onClick: () -> Unit = {}
 ) {
     val tagModifier = modifier
@@ -63,7 +62,7 @@ fun InterestTag(
         .clickable(onClick = onClick)
         .clip(shape = shape)
         .background(colors.backgroundColor(enabled = true).value)
-        .padding(horizontal = 8.dp, vertical = 4.dp)
+        .padding(horizontal = 14.dp, vertical = 6.dp)
     Text(
         text = text,
         color = colors.contentColor(enabled = true).value,
