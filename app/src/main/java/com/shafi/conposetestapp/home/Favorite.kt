@@ -39,31 +39,39 @@ fun Favorite(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .statusBarsPadding()
         ) {
-            Text(
-                text = "My Favorites",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
-            )
+            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)) {
+                Text(
+                    text = "My Favorites",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = "${favorites.size} saved ${if (favorites.size == 1) "recipe" else "recipes"}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             if (favorites.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("❤️", style = MaterialTheme.typography.displayMedium)
-                        Spacer(Modifier.height(8.dp))
-                        Text("No favorites yet", style = MaterialTheme.typography.titleMedium)
+                        Text("🤍", style = MaterialTheme.typography.displayLarge)
+                        Spacer(Modifier.height(12.dp))
+                        Text("No favorites yet", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.height(4.dp))
                         Text(
                             "Tap the heart on any recipe to save it here",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
             } else {
-                LazyColumn(contentPadding = PaddingValues(bottom = 8.dp)) {
+                LazyColumn(contentPadding = PaddingValues(top = 8.dp, bottom = 16.dp)) {
                     items(favorites, key = { it.id }) { recipe ->
                         RecipeCard(
                             recipe = recipe,
