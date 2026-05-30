@@ -1,28 +1,29 @@
-
 package com.shafi.conposetestapp.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.shafi.conposetestapp.R
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.shafi.conposetestapp.ui.theme.RecipeScaffold
+import com.shafi.conposetestapp.viewmodel.RecipeViewModel
 
 @Composable
 fun Favorite(
     onSnackClick: (Long) -> Unit,
     onNavigateToRoute: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    vm: RecipeViewModel = viewModel()
 ) {
+    val favorites by vm.favorites.collectAsStateWithLifecycle()
 
     RecipeScaffold(
         bottomBar = {
@@ -33,34 +34,45 @@ fun Favorite(
             )
         },
         modifier = modifier
-    ) {
+    ) { padding ->
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .wrapContentSize()
-                .padding(24.dp)
-                .padding(it)
+                .padding(padding)
         ) {
             Text(
-                text = "Work in progress",
-                style = MaterialTheme.typography.subtitle2,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                text = "My Favorites",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
             )
+            if (favorites.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("❤️", style = MaterialTheme.typography.displayMedium)
+                        Spacer(Modifier.height(8.dp))
+                        Text("No favorites yet", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            "Tap the heart on any recipe to save it here",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            } else {
+                LazyColumn(contentPadding = PaddingValues(bottom = 8.dp)) {
+                    items(favorites, key = { it.id }) { recipe ->
+                        RecipeCard(
+                            recipe = recipe,
+                            onItemClick = { onSnackClick(recipe.id.toLong()) },
+                            onFavoriteClick = { vm.toggleFavorite(recipe.id) }
+                        )
+                    }
+                }
+            }
         }
-
     }
 }
-
-@Composable
-private fun Favorite(
-    onSnackClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
-) {
-
-
-}
-
-
-
