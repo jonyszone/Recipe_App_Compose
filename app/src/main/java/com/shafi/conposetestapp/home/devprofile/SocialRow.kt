@@ -1,53 +1,46 @@
 package com.shafi.conposetestapp.home.devprofile
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.guru.composecookbook.theme.components.Material3Card
 import com.shafi.conposetestapp.R
 import com.shafi.conposetestapp.home.launchSocialActivity
 
 @Composable
 fun SocialRow() {
-    Material3Card(elevation = 8.dp, modifier = Modifier.padding(8.dp), backgroundColor = MaterialTheme.colorScheme.surface) {
-        val context = LocalContext.current
+    val context = LocalContext.current
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
         Row(
-            horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { launchSocialActivity(context, "github") }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_github_square_brands),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            IconButton(onClick = { launchSocialActivity(context, "twitter") }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_twitter_square_brands),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            IconButton(onClick = { launchSocialActivity(context, "linkedin") }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_linkedin_brands),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+            SocialButton(R.drawable.ic_github_square_brands, "GitHub") { launchSocialActivity(context, "github") }
+            SocialButton(R.drawable.ic_twitter_square_brands, "Twitter") { launchSocialActivity(context, "twitter") }
+            SocialButton(R.drawable.ic_linkedin_brands, "LinkedIn") { launchSocialActivity(context, "linkedin") }
         }
+    }
+}
+
+@Composable
+private fun SocialButton(iconRes: Int, label: String, onClick: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        IconButton(onClick = onClick) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = label,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+        Text(label, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Medium)
     }
 }
