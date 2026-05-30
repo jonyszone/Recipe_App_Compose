@@ -22,23 +22,32 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     private val repository = MealDbRepository(application)
 
     val searchQuery = MutableStateFlow("")
-
     val categories = MutableStateFlow<List<String>>(emptyList())
     val selectedCategory = MutableStateFlow("Beef")
 
     private val _feedState = MutableStateFlow<UiState>(UiState.Loading)
     val feedState: StateFlow<UiState> = _feedState.asStateFlow()
 
-    // Favorite meals are fetched by id from the API (no local meal DB)
-    val favorites: StateFlow<List<FoodRecipe>> = repository.favoriteIds
-        .mapLatest { ids -> ids.mapNotNull { repository.getMealById(it)?.copy(isFavorite = true) } }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    // Cache: id -> full FoodRecipe, so lookup.php is only called once per id
+    private val mealCache = mutableMapOf<Int, FoodRecipe>()
 
     private val favoriteIds: StateFlow<Set<Int>> = repository.favoriteIds
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptySet())
 
+    val favorites: StateFlow<List<FoodRecipe>> = favoriteIds
+        .mapLatest { ids ->
+            ids.mapNotNull { id ->
+                mealCache[id] ?: repository.getMealById(id)
+                    ?.copy(isFavorite = true)
+                    ?.also { mealCache[id] = it }
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     init {
         loadCategories()
+        // debounce(400) on the initial empty-string emission defers the first
+        // category load until after the first frame is drawn, eliminating startup jank
         viewModelScope.launch {
             combine(searchQuery.debounce(400), selectedCategory) { q, cat -> q to cat }
                 .collectLatest { (query, category) ->
@@ -80,6 +89,8 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     fun toggleFavorite(id: Int) {
         viewModelScope.launch {
             repository.toggleFavorite(id)
+            // Invalidate cache entry so it's re-fetched with updated isFavorite state
+            mealCache.remove(id)
             val current = _feedState.value
             if (current is UiState.Success) {
                 _feedState.value = UiState.Success(
@@ -96,7 +107,11 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    suspend fun getMealById(id: Int): FoodRecipe? = runCatching {
-        repository.getMealById(id)?.copy(isFavorite = id in favoriteIds.value)
-    }.getOrNull()
+    suspend fun getMealById(id: Int): FoodRecipe? {
+        mealCache[id]?.let { return it.copy(isFavorite = id in favoriteIds.value) }
+        return runCatching {
+            repository.getMealById(id)?.copy(isFavorite = id in favoriteIds.value)
+                ?.also { mealCache[id] = it }
+        }.getOrNull()
+    }
 }
