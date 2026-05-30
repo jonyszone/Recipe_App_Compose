@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.shafi.conposetestapp.home.HomeSections
+import com.shafi.conposetestapp.home.RecipeDetailScreen
 import com.shafi.conposetestapp.home.addHomeGraph
 import com.shafi.conposetestapp.navigation.MainDestinations
 import com.shafi.conposetestapp.navigation.rememberRecipeNavController
@@ -21,7 +22,8 @@ fun RecipeApp() {
 
         NavHost(
             navController = recipeNavController.navController,
-            startDestination = MainDestinations.HOME_ROUTE) {
+            startDestination = MainDestinations.HOME_ROUTE
+        ) {
             recipeNavGraph(
                 onSnackSelected = recipeNavController::navigateToSnackDetail,
                 upPress = recipeNavController::upPress,
@@ -30,7 +32,6 @@ fun RecipeApp() {
         }
     }
 }
-
 
 private fun NavGraphBuilder.recipeNavGraph(
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
@@ -47,8 +48,7 @@ private fun NavGraphBuilder.recipeNavGraph(
         "${MainDestinations.RECIPE_DETAIL_ROUTE}/{${MainDestinations.SNACK_ID_KEY}}",
         arguments = listOf(navArgument(MainDestinations.SNACK_ID_KEY) { type = NavType.LongType })
     ) { backStackEntry ->
-        val arguments = requireNotNull(backStackEntry.arguments)
-        val recipeId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
-       // SnackDetail(recipeId, upPress)
+        val recipeId = backStackEntry.arguments!!.getLong(MainDestinations.SNACK_ID_KEY).toInt()
+        RecipeDetailScreen(recipeId = recipeId, upPress = upPress)
     }
 }
